@@ -14,6 +14,7 @@ but with each element of kind `* -> * -> *` such that the
 second type index of an element is equal to the first type index of its successor.
 
 Also included are
+
 1. an implementation of a `Free f` monad of a functor `f` in terms of type-directed sequences;
 2. a `Program i` monad in the style of the 
 [`operational`](http://hackage.haskell.org/package/operational) package
