@@ -6,7 +6,7 @@
     RankNTypes,
     GADTs
   #-}
-module Store where
+module Main where
 
 import Control.Monad.FreeReflect
 import Control.Monad.State.Class
