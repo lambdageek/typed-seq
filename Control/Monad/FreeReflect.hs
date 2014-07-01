@@ -18,6 +18,7 @@ module Control.Monad.FreeReflect (
   , knat
   ) where
 
+import Control.Applicative
 import qualified Control.Category as Cat
 import Control.Monad
 
@@ -56,8 +57,12 @@ toView (Free (Step fx) s) = Step (fmap (\x -> x >>>= s) fx)
 instance Functor f => Functor (Free f) where
   fmap = liftM
 
+instance Functor f => Applicative (Free f) where
+  pure = return
+  (<*>) = ap
+
 instance Functor f => Monad (Free f) where
-  return x = fromView (Pure x)
+  return = fromView . Pure
   (Free h s) >>= mf = Free h (s `S.snoc` KA mf)
 
 data Program instr a where
@@ -66,6 +71,13 @@ data Program instr a where
 
 data ReifiedFunctor f a where
   FMap :: (a -> b) -> f a -> ReifiedFunctor f b
+
+instance Functor (Program instr) where
+  fmap = liftM
+
+instance Applicative (Program instr) where
+  pure = return
+  (<*>) = ap
 
 instance Monad (Program instr) where
   return = Return

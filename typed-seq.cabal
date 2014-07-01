@@ -24,6 +24,7 @@ test-suite tree
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Tree.hs
+  default-language:    Haskell2010
   build-depends:       base >= 4.6 && < 4.8
                        , HUnit == 1.2.*
                        , typed-seq

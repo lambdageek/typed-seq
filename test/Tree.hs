@@ -5,6 +5,8 @@
   #-}
 module Main where
 
+import Control.Applicative
+import Control.Monad
 import qualified Data.TypedSequence as S
 import Control.Monad.FreeReflect
 
@@ -63,6 +65,13 @@ tree1 = insert "r" $ insert "a" $ insert "z" $ insert "y" $ singleton "x"
 type RPair = ReifiedFunctor Pair
 
 newtype Subst a = Subst {unSubst :: Program RPair a}
+
+instance Functor Subst where
+  fmap = liftM
+
+instance Applicative Subst where
+  pure = return
+  (<*>) = ap
 
 instance Monad Subst where
   return = Subst . return
