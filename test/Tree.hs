@@ -80,7 +80,7 @@ instance Monad Subst where
 instance Show a => Show (Subst a) where
   showsPrec _ (Subst (Return x)) = shows x
   showsPrec _ (Subst (Primitive (FMap f p) k)) = let
-    fnk = Subst . unKA (S.categorySeqApply k)
+    fnk = Subst . unKA (S.foldl k)
     in shows (fmap (fnk . f) p)
 
     
@@ -95,7 +95,7 @@ interpret :: forall a . Subst a -> Tree a
 interpret (Subst (Return x)) = singleton x
 interpret (Subst (Primitive (FMap f p :: RPair b) (k :: S.Seq (KleisliArrow (Program RPair)) b a))) = let
   fnk :: b -> Subst a
-  fnk = Subst . unKA (S.categorySeqApply k)
+  fnk = Subst . unKA (S.foldl k)
 
   p' :: Pair (Tree a)
   p' = fmap (interpret . fnk . f) p

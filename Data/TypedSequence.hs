@@ -23,10 +23,13 @@ module Data.TypedSequence (
   toList,
   Natural2,
   nat2,
+  foldl,
+  foldr,
   categorySeqApply,
   categorySeqApply'
   ) where
 
+import Prelude hiding (foldl, foldr)
 import qualified Control.Category as Cat
 import Control.Category (Category)
 
@@ -122,15 +125,27 @@ appendBin s1 (Bin23 t1) (Bin23 t2) s2 = s1 `snoc` t1 >< t2 `cons` s2
 
 -- < Arrow
 
+-- | Compose arrows in the sequence, associating from the left.
+foldl :: Category arr => Seq arr a b -> arr a b
+foldl s =
+  case viewL s of
+    NilL -> Cat.id
+    (f :< fs) -> foldl fs Cat.. f
+
+-- | Compose arrows in the sequence, associating from the right.
+foldr :: Category arr => Seq arr a b -> arr a b
+foldr s =
+  case viewR s of
+    NilR -> Cat.id
+    (fs :> f) -> f Cat.. categorySeqApply' fs
+
+{-# DEPRECATED categorySeqApply, categorySeqApply' "Use foldl and foldr instead" #-}
+
 categorySeqApply :: Category arr => Seq arr a b -> arr a b
-categorySeqApply s = case viewL s of
-  NilL -> Cat.id
-  (f :< fs) -> categorySeqApply fs Cat.. f
+categorySeqApply = foldl
 
 categorySeqApply' :: Category arr => Seq arr a b -> arr a b
-categorySeqApply' s = case viewR s of
-  NilR -> Cat.id
-  (fs :> f) -> f Cat.. categorySeqApply' fs
+categorySeqApply' = foldr
 
 
 data Const2 t a b = Const2 { getConst2 :: t }

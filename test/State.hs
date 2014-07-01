@@ -45,7 +45,7 @@ runProgramState :: Program (S s) a -> s -> (a, s)
 runProgramState (Return x) st = (x, st)
 runProgramState (Primitive (S h) k) st = let
   (st', x) = h st
-  rest = unKA (Seq.categorySeqApply k) x -- Program (S s) b
+  rest = unKA (Seq.foldl k) x -- Program (S s) b
   in
    runProgramState rest st'
 
