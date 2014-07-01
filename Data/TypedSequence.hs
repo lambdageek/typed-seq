@@ -3,6 +3,7 @@
     GADTs
   , RankNTypes
   , ScopedTypeVariables
+  , PolyKinds
   #-}
 module Data.TypedSequence (
   -- * Catenable type-directed sequences
@@ -66,7 +67,8 @@ cons :: arr a b -> Seq arr b c -> Seq arr a c
 cons x Empty = One x
 cons x (One y) = Several (Bin1 x) Empty (Bin1 y)
 cons x (Several (Bin1 y) m r) = Several (Bin23 $ Tup2 x y) m r
-cons x (Several (Bin23 p) m r) = Several (Bin1 x) (cons p m) r
+cons x (Several (Bin23 (Tup2 y z)) m r) = Several (Bin23 $ Tup3 x y z) m r
+cons x (Several (Bin23 (t@Tup3 {})) m r) = Several (Bin1 x) (cons t m) r
 
 infixl 6 `snoc`
 
@@ -74,7 +76,8 @@ snoc :: Seq arr a b -> arr b c -> Seq arr a c
 snoc Empty x = One x
 snoc (One x) y = Several (Bin1 x) Empty (Bin1 y)
 snoc (Several l m (Bin1 x)) y = Several l m (Bin23 $ Tup2 x y)
-snoc (Several l m (Bin23 p)) y = Several l (m `snoc` p) (Bin1 y)
+snoc (Several l m (Bin23 (Tup2 x y))) z = Several l m (Bin23 $ Tup3 x y z)
+snoc (Several l m (Bin23 (t@Tup3 {}))) z = Several l (m `snoc` t) (Bin1 z)
 
 viewL :: Seq arr a b -> ViewL arr a b
 viewL Empty = NilL
