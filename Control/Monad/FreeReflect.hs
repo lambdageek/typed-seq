@@ -9,6 +9,7 @@ module Control.Monad.FreeReflect (
   , fromView
     -- * An alternative construction
   , Program(..)
+  , primitive
     -- * Bijection witnesses
   , ReifiedFunctor(..)
   , fwd
@@ -68,6 +69,9 @@ instance Functor f => Monad (Free f) where
 data Program instr a where
   Return :: a -> Program instr a
   Primitive :: instr b -> S.Seq (KleisliArrow (Program instr)) b a -> Program instr a
+
+primitive :: instr a -> Program instr a
+primitive opn = Primitive opn S.empty
 
 data ReifiedFunctor f a where
   FMap :: (a -> b) -> f a -> ReifiedFunctor f b
