@@ -1,6 +1,8 @@
 typed-seq
 =========
 
+[![Build Status](https://travis-ci.org/lambdageek/typed-seq.svg)](https://travis-ci.org/lambdageek/typed-seq)
+
 This is an implementation of the ideas from
 [Reflection Without Remorse](http://homepages.cwi.nl/~ploeg/papers/zseq.pdf)
 by [van der Ploeg](http://homepages.cwi.nl/~ploeg/) and [Kiselyov](http://okmij.org/ftp/)
